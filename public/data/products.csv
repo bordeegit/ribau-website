@@ -1,0 +1,9 @@
+id,name,description,category,price,image1,image2,inStock,featured
+COL001,Leather Dog Collar,Durable leather collar with brass buckle. Available in multiple sizes.,Collars,24.99,https://example.com/images/collar1.jpg,https://example.com/images/collar1-alt.jpg,true,true
+BLK001,Cozy Pet Blanket,Soft fleece blanket perfect for keeping your pet warm. Machine washable.,Blankets,19.99,https://example.com/images/blanket1.jpg,,true,false
+TOY001,Rope Tug Toy,Heavy-duty rope toy for interactive play. Great for dental health.,Toys,12.99,https://example.com/images/toy1.jpg,,true,false
+BWL001,Stainless Steel Bowl,Non-slip stainless steel food bowl. Dishwasher safe.,Bowls,15.99,https://example.com/images/bowl1.jpg,,true,false
+COL002,Reflective Night Collar,Safety collar with reflective strips for nighttime walks.,Collars,29.99,https://example.com/images/collar2.jpg,,false,false
+BED001,Orthopedic Dog Bed,Memory foam dog bed with removable washable cover. Supports joint health.,Beds,89.99,https://example.com/images/bed1.jpg,https://example.com/images/bed1-alt.jpg,true,true
+TOY002,Squeaky Plush Toy,Soft plush toy with built-in squeaker. Perfect for gentle chewers.,Toys,8.99,https://example.com/images/toy2.jpg,,true,false
+LEAD001,6ft Training Leash,Sturdy nylon leash with comfortable padded handle.,Leashes,16.99,https://example.com/images/leash1.jpg,,true,false

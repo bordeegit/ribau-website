@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <h1>Viva i cani (specialmente lobo) 🐶</h1>
-    <p>CLicca se ami i cani -> {{ count }} </p>
-    <button @click="count++">Click me</button>
+    <ProductCatalog />
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-const count = ref(0)
-</script>
+<script>
+import ProductCatalog from './components/ProductCatalog.vue'
 
-<style>
-#app { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; padding: 2rem; }
-button { padding: .5rem 1rem; cursor: pointer; }
-</style>
+export default {
+  name: 'App',
+  components: {
+    ProductCatalog
+  }
+}
+</script>
