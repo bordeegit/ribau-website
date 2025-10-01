@@ -1,9 +1,55 @@
 <template>
   <div class="catalog">
     <header class="header">
-      <h1>🐾 Mercatino RiBau 🐾</h1>
-      <p>Supporta i nostri amici a 4 zampe del canile di Varese!</p>
+      <h1>🐾 Shelter Shop</h1>
+      <p>Support our furry friends by purchasing quality pet supplies</p>
     </header>
+
+    <!-- Contact Form Popup -->
+    <div v-if="showContactForm" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <button class="close-btn" @click="closeModal">×</button>
+        <h2>Inquire About Product</h2>
+        <form @submit.prevent="submitInquiry" name="ribau-contact" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="ribau-contact">
+          
+          <div class="form-group">
+            <label>Product:</label>
+            <input type="text" v-model="formData.productName" readonly class="readonly-input">
+          </div>
+
+          <div class="form-group">
+            <label>Your Name: *</label>
+            <input type="text" v-model="formData.name" required placeholder="John Doe">
+          </div>
+
+          <div class="form-group">
+            <label>Your Email: *</label>
+            <input type="email" v-model="formData.email" required placeholder="john@example.com">
+          </div>
+
+          <div class="form-group">
+            <label>Phone (optional):</label>
+            <input type="tel" v-model="formData.phone" placeholder="+1 234 567 8900">
+          </div>
+
+          <div class="form-group">
+            <label>Message: *</label>
+            <textarea v-model="formData.message" required rows="5" placeholder="Your message..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" @click="closeModal" class="btn-cancel">Cancel</button>
+            <button type="submit" class="btn-submit" :disabled="submitting">
+              {{ submitting ? 'Sending...' : 'Send Inquiry' }}
+            </button>
+          </div>
+
+          <p v-if="submitSuccess" class="success-message">✓ Your inquiry has been sent successfully!</p>
+          <p v-if="submitError" class="error-message">{{ submitError }}</p>
+        </form>
+      </div>
+    </div>
 
     <!-- Category Filter -->
     <div class="filters">
@@ -28,7 +74,7 @@
       >
         <div class="image-container">
           <img 
-            :src="product.image1 || '/lobo_fallback.jpeg'" 
+            :src="product.image1 || '/images/lobo_fallback.jpeg'" 
             :alt="product.name"
             @error="handleImageError"
           >
@@ -61,8 +107,6 @@
 </template>
 
 <script>
-import Papa from 'papaparse';
-
 export default {
   name: 'ProductCatalog',
   data() {
@@ -70,7 +114,20 @@ export default {
       products: [],
       selectedCategory: 'All',
       loading: true,
-      error: null
+      error: null,
+      showContactForm: false,
+      selectedProduct: null,
+      formData: {
+        productName: '',
+        productId: '',
+        name: '',
+        email: '',
+        phone: '',
+        message: ''
+      },
+      submitting: false,
+      submitSuccess: false,
+      submitError: null
     };
   },
   computed: {
@@ -89,46 +146,103 @@ export default {
     this.loadProducts();
   },
   methods: {
+    parseCSV(text) {
+      const lines = text.split('\n').filter(line => line.trim());
+      const headers = lines[0].split(',').map(h => h.trim());
+      
+      return lines.slice(1).map(line => {
+        const values = line.split(',').map(v => v.trim());
+        const row = {};
+        headers.forEach((header, i) => {
+          row[header] = values[i] || '';
+        });
+        return row;
+      });
+    },
+    
     async loadProducts() {
       try {
         const response = await fetch('/data/products.csv');
         const csvText = await response.text();
+        const rows = this.parseCSV(csvText);
         
-        Papa.parse(csvText, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results) => {
-            this.products = results.data.map(row => ({
-              id: row.id,
-              name: row.name,
-              description: row.description,
-              category: row.category,
-              price: parseFloat(row.price) || 0,
-              image1: row.image1,
-              image2: row.image2,
-              inStock: row.inStock === 'true' || row.inStock === 'TRUE',
-              featured: row.featured === 'true' || row.featured === 'TRUE'
-            }));
-            this.loading = false;
-          },
-          error: (error) => {
-            this.error = 'Failed to load products: ' + error.message;
-            this.loading = false;
-          }
-        });
+        this.products = rows.map(row => ({
+          id: row.id,
+          name: row.name,
+          description: row.description,
+          category: row.category,
+          price: parseFloat(row.price) || 0,
+          image1: row.image1,
+          image2: row.image2,
+          inStock: row.inStock === 'true' || row.inStock === 'TRUE',
+          featured: row.featured === 'true' || row.featured === 'TRUE'
+        }));
+        
+        this.loading = false;
       } catch (err) {
         this.error = 'Failed to load products. Please try again later.';
         this.loading = false;
+        console.error(err);
       }
     },
     handleImageError(event) {
-      event.target.src = '/lobo_fallback.jpeg';
+      event.target.src = '/images/lobo_fallback.jpeg';
     },
     contactAboutProduct(product) {
-      // Customize this - could open email, WhatsApp, contact form, etc.
-      const subject = encodeURIComponent(`Inquiry about ${product.name}`);
-      const body = encodeURIComponent(`Hi, I'm interested in the ${product.name} (${product.id}). Is it still available?`);
-      window.location.href = `mailto:shelter@example.com?subject=${subject}&body=${body}`;
+      this.selectedProduct = product;
+      this.formData = {
+        productName: `${product.name} (${product.id})`,
+        productId: product.id,
+        name: '',
+        email: '',
+        phone: '',
+        message: `Hi, I'm interested in the ${product.name}. Is it still available?`
+      };
+      this.showContactForm = true;
+      this.submitSuccess = false;
+      this.submitError = null;
+    },
+    closeModal() {
+      this.showContactForm = false;
+      this.selectedProduct = null;
+    },
+    async submitInquiry() {
+      this.submitting = true;
+      this.submitError = null;
+      this.submitSuccess = false;
+
+      try {
+        const formElement = document.querySelector('form[name="ribau-contact"]');
+        const formData = new FormData(formElement);
+        
+        // Add all form fields to FormData
+        formData.set('productName', this.formData.productName);
+        formData.set('productId', this.formData.productId);
+        formData.set('name', this.formData.name);
+        formData.set('email', this.formData.email);
+        formData.set('phone', this.formData.phone);
+        formData.set('message', this.formData.message);
+
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData).toString()
+        });
+
+        if (response.ok) {
+          this.submitSuccess = true;
+          setTimeout(() => {
+            this.closeModal();
+          }, 2000);
+        } else {
+          throw new Error('Form submission failed');
+        }
+      } catch (error) {
+        this.submitError = 'Failed to send inquiry. Please try again or contact us directly.';
+        console.error('Form submission error:', error);
+      } finally {
+        this.submitting = false;
+      }
     }
   }
 };
@@ -313,5 +427,183 @@ export default {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
   }
+
+  .modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #7f8c8d;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #2c3e50;
+}
+
+.modal-content h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.readonly-input {
+  background: #f8f9fa;
+  color: #7f8c8d;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.btn-cancel,
+.btn-submit {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-cancel {
+  background: #ecf0f1;
+  color: #7f8c8d;
+}
+
+.btn-cancel:hover {
+  background: #d5dbdb;
+}
+
+.btn-submit {
+  background: #3498db;
+  color: white;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.btn-submit:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.success-message {
+  margin-top: 15px;
+  padding: 10px;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.error-message {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f8d7da;
+  color: #721c24;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.9rem;
 }
 </style>
