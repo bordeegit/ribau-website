@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <h1>Hello from Vue + Vite 🚀</h1>
-    <p>Clicked {{ count }} times</p>
+    <h1>Viva i cani (specialmente lobo) 🐶</h1>
+    <p>CLicca se ami i cani -> {{ count }} </p>
     <button @click="count++">Click me</button>
   </div>
 </template>
