@@ -1,51 +1,51 @@
 <template>
   <div class="catalog">
     <header class="header">
-      <h1>🐾 Shelter Shop</h1>
-      <p>Support our furry friends by purchasing quality pet supplies</p>
+      <h1>🐾 RiBau </h1>
+      <p>Supporta i nostri amici a quattro zampe del Canile di Varese!</p>
     </header>
 
     <!-- Contact Form Popup -->
     <div v-if="showContactForm" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <button class="close-btn" @click="closeModal">×</button>
-        <h2>Inquire About Product</h2>
+        <h2>Richiesta di Contatto</h2>
         <form @submit.prevent="submitInquiry" name="ribau-contact" method="POST" data-netlify="true">
           <input type="hidden" name="form-name" value="ribau-contact">
           
           <div class="form-group">
-            <label>Product:</label>
+            <label>Prodotto:</label>
             <input type="text" v-model="formData.productName" readonly class="readonly-input">
           </div>
 
           <div class="form-group">
-            <label>Your Name: *</label>
-            <input type="text" v-model="formData.name" required placeholder="John Doe">
+            <label>Nome: *</label>
+            <input type="text" v-model="formData.name" required placeholder="Ri Bau">
           </div>
 
           <div class="form-group">
-            <label>Your Email: *</label>
-            <input type="email" v-model="formData.email" required placeholder="john@example.com">
+            <label>Email: *</label>
+            <input type="email" v-model="formData.email" required placeholder="ribau@esempio.com">
           </div>
 
           <div class="form-group">
-            <label>Phone (optional):</label>
-            <input type="tel" v-model="formData.phone" placeholder="+1 234 567 8900">
+            <label>Telefono (opzionale):</label>
+            <input type="tel" v-model="formData.phone" placeholder="+39 123 456 7890">
           </div>
 
           <div class="form-group">
-            <label>Message: *</label>
-            <textarea v-model="formData.message" required rows="5" placeholder="Your message..."></textarea>
+            <label>Messaggio: *</label>
+            <textarea v-model="formData.message" required rows="5" placeholder="Il tuo messaggio..."></textarea>
           </div>
 
           <div class="form-actions">
-            <button type="button" @click="closeModal" class="btn-cancel">Cancel</button>
+            <button type="button" @click="closeModal" class="btn-cancel">Cancella</button>
             <button type="submit" class="btn-submit" :disabled="submitting">
-              {{ submitting ? 'Sending...' : 'Send Inquiry' }}
+              {{ submitting ? 'Invio...' : 'Richiesta Inviata!' }}
             </button>
           </div>
 
-          <p v-if="submitSuccess" class="success-message">✓ Your inquiry has been sent successfully!</p>
+          <p v-if="submitSuccess" class="success-message">✓ La tua richiesta è stata inviata con successo!</p>
           <p v-if="submitError" class="error-message">{{ submitError }}</p>
         </form>
       </div>
@@ -64,7 +64,7 @@
     </div>
 
     <!-- Products Grid -->
-    <div v-if="loading" class="loading">Loading products...</div>
+    <div v-if="loading" class="loading">Caricamento prodotti...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else class="products-grid">
       <div 
@@ -79,7 +79,7 @@
             @error="handleImageError"
           >
           <span v-if="product.featured" class="badge">⭐ Featured</span>
-          <span v-if="!product.inStock" class="badge out-of-stock">Out of Stock</span>
+          <span v-if="!product.inStock" class="badge out-of-stock">Sold Out</span>
         </div>
         
         <div class="product-info">
@@ -101,7 +101,7 @@
     </div>
 
     <div v-if="filteredProducts.length === 0 && !loading" class="no-products">
-      No products found in this category.
+      Nessun prodotto presente in questa categoria.
     </div>
   </div>
 </template>
@@ -196,7 +196,7 @@ export default {
         name: '',
         email: '',
         phone: '',
-        message: `Hi, I'm interested in the ${product.name}. Is it still available?`
+        message: `Ciao, Sono interessato/a a ${product.name}. È ancora disponibile?`
       };
       this.showContactForm = true;
       this.submitSuccess = false;
@@ -235,10 +235,10 @@ export default {
             this.closeModal();
           }, 2000);
         } else {
-          throw new Error('Form submission failed');
+          throw new Error('Errore invio richiesta');
         }
       } catch (error) {
-        this.submitError = 'Failed to send inquiry. Please try again or contact us directly.';
+        this.submitError = 'Errore nell\'invio della richiesta. Riprova o contattaci direttamente.';
         console.error('Form submission error:', error);
       } finally {
         this.submitting = false;

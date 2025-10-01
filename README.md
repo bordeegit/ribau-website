@@ -2,9 +2,7 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7e08825d-0171-465e-958e-a8600333f7b3/deploy-status)](https://app.netlify.com/projects/ribau/deploys)
 
-
-
-This template should help get you started developing with Vue 3 in Vite.
+Website to display products from RiBau, the thrift shop of Varese's Dog Shelter.
 
 ## Recommended IDE Setup
 
