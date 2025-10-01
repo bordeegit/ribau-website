@@ -1,11 +1,17 @@
-<script setup></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div id="app">
+    <h1>Hello from Vue + Vite 🚀</h1>
+    <p>Clicked {{ count }} times</p>
+    <button @click="count++">Click me</button>
+  </div>
 </template>
 
-<style scoped></style>
+<script setup>
+import { ref } from 'vue'
+const count = ref(0)
+</script>
+
+<style>
+#app { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; padding: 2rem; }
+button { padding: .5rem 1rem; cursor: pointer; }
+</style>
