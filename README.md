@@ -17,6 +17,15 @@ Website to display products from RiBau, the thrift shop of Varese's Dog Shelter.
   - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
   - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
 
+## Install node 
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
+Open a new terminal or reload bashrc and run
+```sh
+nvm install 20
+```
+
 ## Customize configuration
 
 See [Vite Configuration Reference](https://vite.dev/config/).

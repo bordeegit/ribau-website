@@ -1,6 +1,6 @@
-id,nome,descrizione,categoria,prezzo,image1,image2,disponibile,primoPiano
-001,Collare in Pelle per Cani,Collare in pelle resistente con fibbia in ottone. Disponibile in varie misure.,Collari,24.99,https://example.com/images/collar1.jpg,https://example.com/images/collar1-alt.jpg,true,true
-002,Coperta Accogliente per Animali,Coperta in pile morbido perfetta per mantenere il tuo animale al caldo. Lavabile in lavatrice.,Coperte,19.99,https://example.com/images/blanket1.jpg,,true,false
+id,name,description,category,price,image1,image2,inStock,featured
+COL001,Collare in Pelle per Cani,Collare in pelle resistente con fibbia in ottone. Disponibile in varie misure.,Collari,24.99,https://example.com/images/collar1.jpg,https://example.com/images/collar1-alt.jpg,true,true
+BLK001,Coperta Accogliente per Animali,Coperta in pile morbido perfetta per mantenere il tuo animale al caldo. Lavabile in lavatrice.,Coperte,19.99,https://example.com/images/blanket1.jpg,,true,false
 TOY001,Giocattolo da Tiro in Corda,Giocattolo in corda resistente per gioco interattivo. Ottimo per la salute dentale.,Giochi,12.99,https://example.com/images/toy1.jpg,,true,false
 BWL001,Ciotola in Acciaio Inox,Ciotola per cibo in acciaio inox antiscivolo. Lavabile in lavastoviglie.,Ciotole,15.99,https://example.com/images/bowl1.jpg,,true,false
 COL002,Collare Riflettente Notturno,Collare di sicurezza con strisce riflettenti per passeggiate notturne.,Collari,29.99,https://example.com/images/collar2.jpg,,false,false

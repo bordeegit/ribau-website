@@ -1,0 +1,39 @@
+name: Sync Google Sheets to CSV
+
+on:
+  # schedule:
+    # Runs every 30 minutes
+    # - cron: '*/30 * * * *'
+  workflow_dispatch: # Allows manual trigger from Actions tab
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install googleapis
+
+      - name: Fetch Google Sheets data and convert to CSV
+        env:
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: node scripts/sync-sheets.js
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add public/data/products.csv
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update products from Google Sheets [skip ci]" && git push)
