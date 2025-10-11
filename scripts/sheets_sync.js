@@ -23,7 +23,7 @@ async function syncSheetsToCSV() {
     // Fetch data from Google Sheets
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: 'Products!A:J', // Adjust range if needed
+      range: 'Prodotti!A:J', // Adjust range if needed
     });
 
     const rows = response.data.values;
