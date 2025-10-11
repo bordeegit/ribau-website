@@ -29,7 +29,7 @@ jobs:
         env:
           GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-        run: node scripts/sync-sheets.js
+        run: node scripts/sheets-sync.js
 
       - name: Commit and push if changed
         run: |
