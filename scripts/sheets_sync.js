@@ -1,6 +1,11 @@
-const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
+import { google } from 'googleapis';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function syncSheetsToCSV() {
   try {
@@ -18,7 +23,7 @@ async function syncSheetsToCSV() {
     // Fetch data from Google Sheets
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: 'Prodotti!A:J', // Adjust range if needed
+      range: 'Products!A:J', // Adjust range if needed
     });
 
     const rows = response.data.values;
